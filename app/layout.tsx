@@ -1,3 +1,4 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -20,11 +21,14 @@ export default function RootLayout({
       <body>
         <TanStackProvider>
           <Header />
-          {children}
+
+          <main className="main">
+            {children}
+          </main>
+
           <Footer />
         </TanStackProvider>
       </body>
     </html>
   );
 }
-
