@@ -21,12 +21,18 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      onClose();
-    },
-  });
+  mutationFn: createNote,
+  onError: (error) => {
+    console.error("CREATE NOTE ERROR:", error);
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ["notes"], exact: false });
+    onClose();
+  },
+});
+
+    
+ 
 
   return (
     <Formik
