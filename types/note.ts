@@ -10,3 +10,9 @@ export interface NotesResponse {
   notes: Note[];
   totalPages: number;
 }
+
+export type CreateNotePayload = {
+  title: string;
+  content: string;
+  tag: string;
+};

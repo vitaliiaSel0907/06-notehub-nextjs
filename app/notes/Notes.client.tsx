@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -17,35 +17,35 @@ import type { NotesResponse } from "@/types/note";
 const NotesClient = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [page, setPage] = useState(1);
 
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
 
-  const handleSearchTermChange = (value: string) => {
-    setSearchTerm(value);
-    setCurrentPage(1);
-  };
-
-  const { data, isLoading, isError } = useQuery<NotesResponse, Error>({
-    queryKey: ["notes", currentPage, debouncedSearchTerm],
+  const query = useQuery({
+    queryKey: ["notes", page, debouncedSearch],
     queryFn: () =>
       fetchNotes({
-        page: currentPage,
+        page,
         perPage: 12,
-        search: debouncedSearchTerm,
+        search: debouncedSearch,
       }),
-    placeholderData: { notes: [], totalPages: 1 },
+    placeholderData: (prev) => prev, // ✅ замість keepPreviousData
   });
 
-  if (isLoading) return <p>Loading, please wait...</p>;
-  if (isError) return <p>Error loading notes.</p>;
+  const data = query.data as NotesResponse | undefined;
+
+  if (query.isLoading) return <p>Loading...</p>;
+  if (query.isError) return <p>Error loading notes</p>;
 
   return (
     <div className={css.app}>
       <header className={css.toolbar}>
         <SearchBox
           searchTerm={searchTerm}
-          setSearchTerm={handleSearchTermChange}
+          setSearchTerm={(value) => {
+            setSearchTerm(value);
+            setPage(1);
+          }}
         />
 
         <button
@@ -56,10 +56,10 @@ const NotesClient = () => {
         </button>
       </header>
 
-      {data?.notes.length ? (
+      {data?.notes?.length ? (
         <NoteList notes={data.notes} />
       ) : (
-        <p>No notes found.</p>
+        <p>No notes found</p>
       )}
 
       {isModalOpen && (
