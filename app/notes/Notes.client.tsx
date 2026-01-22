@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
 import css from "./Notes.module.css";
+import Pagination from '@/components/Pagination/Pagination';
 
 import NoteList from "@/components/NoteList/NoteList";
 import SearchBox from "@/components/SearchBox/SearchBox";
