@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import css from "./NoteForm.module.css";
 import { createNote } from "@/lib/api";
+import type { CreateNotePayload } from "@/types/note";
 
 interface NoteFormProps {
   onClose: () => void;
@@ -21,22 +22,23 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-  mutationFn: createNote,
-  onError: (error) => {
-    console.error("CREATE NOTE ERROR:", error);
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["notes"], exact: false });
-    onClose();
-  },
-});
-
-    
- 
+    mutationFn: createNote,
+    onError: (error) => {
+      console.error("CREATE NOTE ERROR:", error);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notes"], exact: false });
+      onClose();
+    },
+  });
 
   return (
-    <Formik
-      initialValues={{ title: "", content: "", tag: "Todo" }}
+    <Formik<CreateNotePayload>
+      initialValues={{
+        title: "",
+        content: "",
+        tag: "Todo",
+      }}
       validationSchema={validationSchema}
       onSubmit={(values) => mutation.mutate(values)}
     >
@@ -51,6 +53,8 @@ const NoteForm = ({ onClose }: NoteFormProps) => {
           <option value="Todo">Todo</option>
           <option value="Work">Work</option>
           <option value="Personal">Personal</option>
+          <option value="Meeting">Meeting</option>
+          <option value="Shopping">Shopping</option>
         </Field>
 
         <div className={css.actions}>

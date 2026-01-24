@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useDebounce } from "use-debounce";
 
 import css from "./Notes.module.css";
-import Pagination from '@/components/Pagination/Pagination';
+import Pagination from "@/components/Pagination/Pagination";
 
 import NoteList from "@/components/NoteList/NoteList";
 import SearchBox from "@/components/SearchBox/SearchBox";
@@ -13,7 +13,7 @@ import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
 
 import { fetchNotes } from "@/lib/api";
-import type { NotesResponse } from "@/types/note";
+import type { NotesResponse } from "@/types/notes-response";
 
 const NotesClient = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,7 +30,7 @@ const NotesClient = () => {
         perPage: 12,
         search: debouncedSearch,
       }),
-    placeholderData: (prev) => prev, // ✅ замість keepPreviousData
+    placeholderData: (prev) => prev,
   });
 
   const data = query.data as NotesResponse | undefined;
@@ -57,10 +57,19 @@ const NotesClient = () => {
         </button>
       </header>
 
-      {data?.notes?.length ? (
+      {data?.notes.length ? (
         <NoteList notes={data.notes} />
       ) : (
         <p>No notes found</p>
+      )}
+
+   
+      {data && data.totalPages > 1 && (
+        <Pagination
+          totalPages={data.totalPages}
+          currentPage={page}
+          onPageChange={setPage}
+        />
       )}
 
       {isModalOpen && (

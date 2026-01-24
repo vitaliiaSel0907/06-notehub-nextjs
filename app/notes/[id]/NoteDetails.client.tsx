@@ -19,14 +19,13 @@ const NoteDetailsClient = () => {
     queryKey: ["note", id],
     queryFn: () => fetchNoteById(id),
     enabled: !!id,
+    refetchOnMount: false, 
   });
 
-  // loading
   if (isLoading) {
     return <p>Loading, please wait...</p>;
   }
 
-  // error or no note
   if (error || !note) {
     return <p>Something went wrong.</p>;
   }
